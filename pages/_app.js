@@ -1,6 +1,8 @@
 import React from "react";
 import App from "next/app";
 import Head from "next/head";
+import Layout from "../components/layout";
+
 
 //Appで使っているものをMy Appで使うことができる
 export default class MyApp extends App {
@@ -14,7 +16,9 @@ export default class MyApp extends App {
             href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           />
         </Head>
-        <Component {...pageProps}></Component>
+        <Layout>
+          <Component {...pageProps}></Component>
+        </Layout>
       </>
     );
   }

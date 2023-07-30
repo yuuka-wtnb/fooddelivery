@@ -7,7 +7,7 @@ export default () => {
                 <Alert color="primary">
                     Hello Project
                 </Alert>
-                <Button color="primary">Hello from Nextjs</Button>
+                <Button color="primary">Hello from Next js</Button>
             </div>
         </div>
     );
