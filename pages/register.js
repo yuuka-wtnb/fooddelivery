@@ -87,18 +87,10 @@ const register = () => {
                     style={{ float: "right", width: 120 }}
                     color="primary"
                     onClick={() => {
-                      setLoading(true);
-                      registerUser(data.username, data.email, data.password)
-                        .then((res) => {
-                          appContext.setUser(res.data.user);
-                          setLoading(false);
-                        })
-                        .catch((err) => {
-                          setError(err.response);
-                          setLoading(false);
-                        });
+                      handleRegister();
                     }}
                   >
+                    登録
                   </Button>
                 </FormGroup>
               </fieldset>
