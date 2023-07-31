@@ -3,10 +3,13 @@ import Link from "next/link";
 
 const RestaurantList = () => {
   return (
+    //xs="6" sm="4"はレスポンシブの設定
     <Row>
-      <Col>
-        <Card>
-            <CardImg src=""></CardImg>
+      <Col xs="6" sm="4">
+        <Card style={{margin:"0 0.5rem 20px 0.5rem"}}>
+            <CardImg src="http://localhost:1337/uploads/thumbnail_restaurant1_03e3dc9bfb.jpg" top={true} style={{height: 250}}>
+            {/* topプロパティに trueが指定されているため、カードの上部に画像が表示されます。*/}
+            </CardImg>
             <CardBody>
                 <CardTitle>
                     Italian Restaurant
@@ -22,6 +25,25 @@ const RestaurantList = () => {
             </Link>
         </Card>
       </Col>
+      <style jsx>
+        {
+            `
+            a{
+                color:white;
+            }
+            a:link{
+                text-decoration: none;
+                color: white;
+            }
+            a:hover{
+                color:white;
+            }
+            .card-columns{
+                column-count: 3;
+            }
+            `
+        }
+      </style>
     </Row>
   );
 };
