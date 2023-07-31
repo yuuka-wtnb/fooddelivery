@@ -47,7 +47,7 @@ const Layout = (props) => {
               </Link>
             ) : (
               <Link href="/login">
-                <a className="nav-link">サインイン</a>
+                <a className="nav-link">ログイン</a>
               </Link>
             )}
           </NavItem>
@@ -57,7 +57,7 @@ const Layout = (props) => {
               <h5>{user.username}</h5>
             ) : (
               <Link href="/register">
-                <a className="nav-link">サインアップ</a>
+                <a className="nav-link">新規登録</a>
               </Link>
             )}
           </NavItem>

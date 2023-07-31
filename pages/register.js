@@ -22,9 +22,9 @@ const register = () => {
 
   const handleRegister = () => {
     registerUser(data.username, data.email, data.password)
-      .then(() => {
+      .then((res) => {
         //_app.jsで登録したsetUser関数を使ってsetStateという形でユーザーをnullの状態ではなく値がある状態に変更する
-        appContext.setUser({...data});
+        appContext.setUser();
       })
       .catch((err) => console.log(err));
   };
@@ -35,7 +35,7 @@ const register = () => {
         <Col>
           <div className="paper">
             <div className="header">
-              <h2>ユーザー登録</h2>
+              <h2>フードデリバリー</h2>
             </div>
           </div>
           <section className="wrapper">
@@ -44,65 +44,65 @@ const register = () => {
                 <FormGroup>
                   <Label>ユーザー名：</Label>
                   <Input
-                    type="text"
-                    name="username"
-                    style={{ height: 50, fontSize: "1.2rem" }}
-                    // dataは{ username: "", email: "", password: "" }のこと
-                    // スプリット構文(...のこと)を展開することによって
-                    // usernameのプロパティに対してe.target.valueこのように値を変えることができる
                     onChange={(e) =>
                       setData({ ...data, username: e.target.value })
                     }
-                  ></Input>
+                    value={data.username}
+                    type="text"
+                    name="username"
+                    style={{ height: 50, fontSize: "1.2rem" }}
+                  />
                 </FormGroup>
-              </fieldset>
-            </Form>
-
-            <Form>
-              <fieldset>
                 <FormGroup>
                   <Label>メールアドレス：</Label>
                   <Input
-                    type="email"
-                    name="email"
-                    style={{ height: 50, fontSize: "1.2rem" }}
                     onChange={(e) =>
                       setData({ ...data, email: e.target.value })
                     }
-                  ></Input>
+                    value={data.email}
+                    type="email"
+                    name="email"
+                    style={{ height: 50, fontSize: "1.2rem" }}
+                  />
                 </FormGroup>
-              </fieldset>
-            </Form>
-
-            <Form>
-              <fieldset>
                 <FormGroup>
                   <Label>パスワード：</Label>
                   <Input
-                    type="password"
-                    name="password"
-                    style={{ height: 50, fontSize: "1.2rem" }}
                     onChange={(e) =>
                       setData({ ...data, password: e.target.value })
                     }
-                  ></Input>
+                    value={data.password}
+                    type="password"
+                    name="password"
+                    style={{ height: 50, fontSize: "1.2rem" }}
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <span>
+                    <a href="">
+                      <small>パスワードをお忘れですか？</small>
+                    </a>
+                  </span>
+                  <Button
+                    style={{ float: "right", width: 120 }}
+                    color="primary"
+                    onClick={() => {
+                      setLoading(true);
+                      registerUser(data.username, data.email, data.password)
+                        .then((res) => {
+                          appContext.setUser(res.data.user);
+                          setLoading(false);
+                        })
+                        .catch((err) => {
+                          setError(err.response);
+                          setLoading(false);
+                        });
+                    }}
+                  >
+                  </Button>
                 </FormGroup>
               </fieldset>
             </Form>
-            <span>
-              <a href="">
-                <small>パスワードをお忘れですか？</small>
-              </a>
-            </span>
-            <Button
-              style={{ float: "right", width: 120 }}
-              color="primary"
-              onClick={() => {
-                handleRegister();
-              }}
-            >
-              登録
-            </Button>
           </section>
         </Col>
       </Row>
@@ -112,14 +112,16 @@ const register = () => {
             text-align: center;
             margin-top: 50px;
           }
-
           .header {
             width: 100%;
             margin-bottom: 30px;
+            border-radius-top: 6px;
           }
-
+          .header h2 {
+            margin: 0;
+          }
           .wrapper {
-            padding: 10px 30px 20px 30px;
+            padding: 10px 30px 20px 30px !important;
           }
         `}
       </style>
