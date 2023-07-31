@@ -1,5 +1,6 @@
 import { Button, Alert, InputGroupText } from "reactstrap";
 import { Col, Input, InputGroup, Row } from "reactstrap";
+import RestaurantList from "../components/RestaurantsList";
 
 const index = () => {
     return (
@@ -12,7 +13,7 @@ const index = () => {
                 <Input placeholder = "レストラン名を入力してください" />
                 </InputGroup>
                 </div>
-
+                <RestaurantList></RestaurantList>
                 </Col>
             </Row>
             <style jsx>
