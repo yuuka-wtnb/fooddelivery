@@ -1,4 +1,4 @@
-import { Card, CardBody, CardImg, CardTitle, Col, Row } from "reactstrap";
+import { Button, Card, CardBody, CardImg, CardTitle, Col, Row } from "reactstrap";
 import Link from "next/link";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
@@ -38,11 +38,13 @@ const Restaurants = (props) => {
 
     return (
       //xs="6" sm="4"はレスポンシブの設定
+      <>
+      <h1 style={{padding:"0 0 0 10px"}}>{restaurant.name}</h1>
       <Row>
         {/* restaurantの中のdishesを1つ1つ取り出す */}
         {restaurant.dishes.map((res) => (
-          <Col xs="6" sm="4" key={res.id}>
-            <Card style={{ margin: "0 0.5rem 20px 0.5rem" }}>
+          <Col xs="6" sm="4" key={res.id} style={{padding:"0 0 0 10px"}}>
+            <Card style={{ margin: "0 10px 0 20px" }}>
               <CardImg
                 src={`${process.env.NEXT_PUBLIC_API_URL}${res.image.url}`}
                 top={true}
@@ -55,12 +57,9 @@ const Restaurants = (props) => {
                 <CardTitle>{res.description}</CardTitle>
               </CardBody>
               <div className="card-footer"></div>
-              <Link
-                as={`/restaurants/${res.id}`}
-                href={`/restaurants?id=${res.id}`}
-              >
-                <a className="btn btn-primary">もっとみる</a>
-              </Link>
+              <Button outline color="primary">
+                +カートに入れる
+              </Button>
             </Card>
           </Col>
         ))}
@@ -83,6 +82,7 @@ const Restaurants = (props) => {
           `}
         </style>
       </Row>
+      </>
     );
   } else {
     return <h1>レストランが見つかりませんでした</h1>;
