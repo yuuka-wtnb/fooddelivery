@@ -16,7 +16,8 @@ const query = gql`
   }
 `;
 
-const RestaurantList = () => {
+//このpropsはpages/index の<RestaurantList search={query}/>
+const RestaurantList = (props) => {
   const { loading, error, data } = useQuery(query);
   if (loading) return <h2>ロード中・・・</h2>;
   if (data) {
