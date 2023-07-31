@@ -22,9 +22,9 @@ const register = () => {
 
   const handleRegister = () => {
     registerUser(data.username, data.email, data.password)
-      .then((res) => {
+      .then(() => {
         //_app.jsで登録したsetUser関数を使ってsetStateという形でユーザーをnullの状態ではなく値がある状態に変更する
-        appContext.setUser(res.data.user);
+        appContext.setUser({...data});
       })
       .catch((err) => console.log(err));
   };

@@ -1,10 +1,13 @@
-import React from "react";
-import App, { Container } from "next/app";
+import React, { useContext } from "react";
+import App from "next/app";
 import Head from "next/head";
 import Link from "next/link";
-import {Nav,NavItem} from "reactstrap";
+import { Container, Nav, NavItem } from "reactstrap";
+import AppContext from "../context/AppContext";
 
 const Layout = (props) => {
+  const { user, setUser } = useContext(AppContext);
+  console.log(user);
   return (
     <div>
       <Head>
@@ -16,31 +19,48 @@ const Layout = (props) => {
       </Head>
       <header>
         <style jsx>
-            {
-                `a{
-                    color: white;
-                }`
+          {`
+            a {
+              color: white;
             }
+          `}
         </style>
         <Nav className="navbar navbar-dark bg-dark">
-            <NavItem>
-                <Link href="/">
-                    <a className="navbar-brand">ホーム</a>
-                </Link>
-            </NavItem>
+          <NavItem>
+            <Link href="/">
+              <a className="navbar-brand">ホーム</a>
+            </Link>
+          </NavItem>
 
-            <NavItem className="ml-auto">
-                <Link href="/login">
-                    <a className="nav-link">サインイン</a>
-                </Link>
-            </NavItem>
-            
-            <NavItem>
-                <Link href="/register">
-                    <a className="nav-link">サインアップ</a>
-                </Link>
-            </NavItem>
+          <NavItem className="ml-auto">
+            {user ? (
+              <Link href="/">
+                <a
+                  className="nav-link"
+                  onClick={() => {
+                    logout();
+                    setUser(null);
+                  }}
+                >
+                  ログアウト
+                </a>
+              </Link>
+            ) : (
+              <Link href="/login">
+                <a className="nav-link">サインイン</a>
+              </Link>
+            )}
+          </NavItem>
 
+          <NavItem>
+            {user ? (
+              <h5>{user.username}</h5>
+            ) : (
+              <Link href="/register">
+                <a className="nav-link">サインアップ</a>
+              </Link>
+            )}
+          </NavItem>
         </Nav>
       </header>
       <Container>{props.children}</Container>
