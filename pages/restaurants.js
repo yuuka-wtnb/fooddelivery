@@ -2,35 +2,41 @@ import { Card, CardBody, CardImg, CardTitle, Col, Row } from "reactstrap";
 import Link from "next/link";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
+import {useRouter} from "next/router";
 
-const query = gql`
+//variablesがrestaurant(id: $id)の$idに設定されるようになる
+const GET_RESTAURANT_DISHES = gql`
   {
-    restaurants {
-      id
-      name
-      description
-      image {
-        url
-      }
+    query($id: ID!){
+        restaurant(id: $id){
+            id
+            name
+            dishes{
+                id
+                name
+                description
+                price
+                image{
+                    url
+                }
+            }
+        }
     }
   }
 `;
 
-//このpropsはpages/index の<RestaurantList search={query}/>
-const RestaurantList = (props) => {
-  const { loading, error, data } = useQuery(query);
+
+const Restaurants = (props) => {
+    const router = useRouter();
+  const { loading, error, data } = useQuery(GET_RESTAURANT_DISHES,{
+    // ここのqueryはhref={`/restaurants?id=${res.id}`}のres.idをとってきてる
+    variables:{id:router.query.id},
+  });
 
   if (loading) return <h2>ロード中・・・</h2>;
   if (error) return "レストランの読み込みに失敗しました"
 
     if (data) {
-      //data.restaurantsの中にレストランの名前が入ってる
-      //restaurantを自分で名前を設定して1つずつチェック
-
-      //includes(props.search)これは、page/indexで<RestaurantList search={query}/>って
-      //設定してるからsearchになってる
-      //props.searchはsearch={query}をみてて、このqueryは設定したsetQuery(e.target.value.toLocaleLowerCase())
-      //検索で打ち込んだ文字列のこと
 
       const searchQuery = data.restaurants.filter((restaurant) =>
         restaurant.name.toLowerCase().includes(props.search)
@@ -91,4 +97,4 @@ const RestaurantList = (props) => {
     }
 };
 
-export default RestaurantList;
+export default Restaurants;
