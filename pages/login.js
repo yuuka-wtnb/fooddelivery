@@ -26,6 +26,7 @@ const Login = () => {
       .then((res) => {
         //ログインに成功したらuserにセットする
         appContext.setUser(res.data.user);
+        //console.log(res.data.user);
       })
       .catch((err) => console.log(err));
   };

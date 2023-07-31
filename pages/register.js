@@ -24,7 +24,7 @@ const register = () => {
     registerUser(data.username, data.email, data.password)
       .then((res) => {
         //_app.jsで登録したsetUser関数を使ってsetStateという形でユーザーをnullの状態ではなく値がある状態に変更する
-        appContext.setUser();
+        appContext.setUser(res.data.user);
       })
       .catch((err) => console.log(err));
   };
