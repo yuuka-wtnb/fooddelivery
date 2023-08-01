@@ -30,7 +30,7 @@ class MyApp extends App {
 
     console.log(cart);
 
-    if (cart != "undefined") {
+    if (cart != "undefined" && typeof cart === "string") {
       JSON.parse(cart).forEach((item) => {
         this.setState({
           cart: { items: JSON.parse(cart), 
