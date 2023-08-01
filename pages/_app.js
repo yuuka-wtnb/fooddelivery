@@ -11,34 +11,37 @@ class MyApp extends App {
   //classなので関数コンポーネント、useStateなどは使えない
   //このstateとsetUserのところは
   //const [state, setState] = useState(null)　と同じ
-  state={
+  state = {
+    //stateで情報を管理
     user: null,
-  }
+    //items；料理、total:itemsに入った合計の値段
+    cart: { items: [], total: 0 },
+  };
 
   //setUserは、この関数を使えばユーザーをセットすることができる
   setUser = (user) => {
-    this.setState({user})
-  }
+    this.setState({ user });
+  };
 
   //すでにユーザーのクッキーが残っているかどうかを確認するための関数
-  componentDidMount(){
+  componentDidMount() {
     const token = Cookies.get("token"); //tokenのなかにはjwdが入っている
 
-    if(token){
+    if (token) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
-        headers:{
+        headers: {
           //本当にcookieがそもそも情報に入っているのか確認する
-          Authorization:`Bearer ${token}`,
-        }
+          Authorization: `Bearer ${token}`,
+        },
         //${process.env.NEXT_PUBLIC_API_URL}/users/meこのエンドポイントが正常に作動するならば
         //そしてBearer token、ヘッダー付きのauthorizationのtokenこれを組み込んだFetch
         //APIをたたくことができたならどうするか
-      }).then(async (res) =>{
-        if(!res.ok){
+      }).then(async (res) => {
+        if (!res.ok) {
           //tokenはセットしてAPIは叩けたけどトークンが7日経過してるとかjwtの記述の文字列が違うなど
           //有効期限が切れているのであればcookieを削除する
           Cookies.remove("token");
-          this.setState({user: null});
+          this.setState({ user: null });
           //なにも入っていない状態を返す
           return null;
         }
@@ -47,10 +50,46 @@ class MyApp extends App {
         const user = await res.json();
         //そのなかにユーザー情報が入っているからsetuser関数を使ってそれを入れてあげる
         this.setUser(user); //ログイン
-        
       });
     }
   }
+
+  //カートへ商品の追加
+  //itemsはサラダやパスタなどの商品を指定で、restaurants.jsのmap関数で展開したresのこと
+  //res.name tes.descriptionとかが入っててresのなかに料理1つ1つの情報がはいっている
+  addItem = (item) => {
+    //this.state.cart;が今現在のカートの中身
+    //その中からitems属性だけ取り出す
+    let { items } = this.state.cart;
+
+    //items→現在のカートの中身
+    //find((i)→iでパスタ、サラダなど1つ1つ取り出していく
+    //i,idでもしサラダが入っていたらサラダのidをとる
+    // i,id === item.id→サラダのidがitem.idと等しいならば
+    // それだけをnewItemに格納する
+    // items.idはサラダやパスタなどの商品を指定で、restaurants.jsのmap関数で展開したresのid
+    const newItem = items.find((i) => i, id === item.id);
+    if (!newItem) {
+      //itemの商品の数
+      item.quantity = 1;
+
+      //cartに追加する
+      this.setState(
+        {
+          cart: {
+            //今まで入ってたもの（...items）に新しいものを追加（item）する
+            items: [...items, item],
+
+            //state={cart: {items:[], total:0}のtotalにアクセス
+            //  それに対してせってされている価格をたす
+            total: this.state.cart.total + item.price,
+          },
+        },
+        //カートの中の情報をCookieに保存
+        () => Cookies.set("cart", this.state.cart.items)
+      );
+    }
+  };
 
   render() {
     const { Component, pageProps } = this.props;
@@ -58,7 +97,9 @@ class MyApp extends App {
       //ユーザーがログインしているのか監視→全部のページで監視したいからreturn全部で囲ってる
       //user: this.state.user→今現在のユーザー状態を渡してあげている
       //どのコンポーネントにおいてもユーザーがログインしたのかをセットしたいからsetUser:this.setUserを渡す必要がある
-      <AppContext.Provider value={{user: this.state.user, setUser:this.setUser}}>
+      <AppContext.Provider
+        value={{ user: this.state.user, setUser: this.setUser }}
+      >
         <>
           <Head>
             <link
