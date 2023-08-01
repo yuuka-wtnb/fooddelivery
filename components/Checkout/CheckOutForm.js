@@ -1,47 +1,54 @@
-import { FormGroup, Input, Label } from "reactstrap";
-import CardSection from "./CardSection";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import Cookies from "js-cookie";
+import React, { useContext, useState } from "react";
+import { FormGroup, Label, Input } from "reactstrap";
 import AppContext from "../../context/AppContext";
-import { useContext, useState } from "react";
-import { useElements, useStripe } from "@stripe/react-stripe-js";
+import CardSection from "./CardSection";
 
-const CheckOutForm = () => {
+const CheckoutForm = () => {
   const [data, setData] = useState({
     address: "",
     stripe_id: "",
   });
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const elements = useElements();
   const stripe = useStripe();
+  const elements = useElements();
+  const appContext = useContext(AppContext);
 
   const handleChange = (e) => {
-    //[e.target.name]=address
-    //address: ""がe.target.valueで更新されていく
     const updateItem = (data[e.target.name] = e.target.value);
+    //更新した商品情報を追加
     setData({ ...data, updateItem });
   };
 
-  const appContext = useContext(AppContext);
-  const userToken = Cookies.get("token");
-
   //注文を確定させる関数
   const submitOrder = async () => {
-    const Cardelement = elements.getElement(CardElement);
+    const cardElement = elements.getElement(CardElement);
     const token = await stripe.createToken(cardElement);
-
-    //.env.developmentのNEXT_PUBLIC_API_URL = "http://localhost:1337"
+    // console.log(token);
+    const userToken = Cookies.get("token");
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
       method: "POST",
       headers: userToken && {
         Authorization: `Bearer ${userToken}`,
       },
       body: JSON.stringify({
-        amount: Number(appContext.cart.total),
-        dishes: appContext.cart.item,
+        amount: Number(Math.round(appContext.cart.total)),
+        dishes: appContext.cart.items,
         address: data.address,
         token: token.token.id,
       }),
     });
+
+    if (!response.ok) {
+      //console.log("注文成功");
+      setSuccess("注文成功");
+    } else {
+     // console.log("注文失敗");
+      setError("注文失敗");
+    }
   };
 
   return (
@@ -55,7 +62,12 @@ const CheckOutForm = () => {
         </div>
       </FormGroup>
 
-      <CardSection />
+      <CardSection
+        submitOrder={submitOrder}
+        errorMsg={error}
+        successMsg={success}
+      />
+
       <style jsx global>
         {`
           .paper {
@@ -171,4 +183,4 @@ const CheckOutForm = () => {
   );
 };
 
-export default CheckOutForm;
+export default CheckoutForm;
