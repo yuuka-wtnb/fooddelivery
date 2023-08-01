@@ -89,6 +89,27 @@ class MyApp extends App {
         () => Cookies.set("cart", this.state.cart.items)
       );
     }
+    //すでに同じ商品がカートに入っているとき
+    else {
+      this.setState({
+        cart: {
+          items: this.state.cart.items.map((item) =>
+            //もしitem.id === newItem.idがtrueなら？以降を実行
+            item.id === newItem.id
+              ? //Object.assign()関数は、既存の配列に対してなにかしらの新しいフィールドを追加したりするときなどに使用
+                //{}の引数を指定することでコピーしますよという意味
+                //items: []の空の配列に対してquantityというをフィールドを新しくitemに追加する
+                //item.quantity→既存の数量ですでにカートに入っているときは＋1してあげる(1+1みたいに)
+                Object.assign({}, item, { quantity: item.quantity + 1 })
+              : item //falseのとき（item.id === newItem.idじゃないときは）ただ単にitemだけ返す
+          ),
+          total:this.state.cart.total + item.price,
+        },
+      },
+      //カートの中の情報をCookieに保存
+      () => Cookies.set("cart", this.state.cart.items)
+      );
+    }
   };
 
   render() {
