@@ -70,7 +70,7 @@ class MyApp extends App {
     // items.idはサラダやパスタなどの商品を指定で、restaurants.jsのmap関数で展開したresのid
     const newItem = items.find((i) => i.id === item.id);
 
-    console.log(newItem);
+    // console.log(newItem);
 
     if (!newItem) {
       //itemの商品の数
@@ -122,8 +122,10 @@ class MyApp extends App {
       //user: this.state.user→今現在のユーザー状態を渡してあげている
       //どのコンポーネントにおいてもユーザーがログインしたのかをセットしたいからsetUser:this.setUserを渡す必要がある
       <AppContext.Provider
+  
       //thisとはこのクラス自身をさしてる。今回だとMyApp
-        value={{ user: this.state.user, setUser: this.setUser, addItem:this.addItem }}
+      //このvalueを全てのコンポーネント内で使うことができる→だからグローバルコンテキストと呼ばれてる
+        value={{ user: this.state.user,cart: this.state.cart ,setUser: this.setUser, addItem:this.addItem }}
       >
         <>
           <Head>
