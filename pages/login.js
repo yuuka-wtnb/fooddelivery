@@ -19,7 +19,7 @@ const Login = () => {
   //AppContext.jsでつかったAppContextを引数で渡すことでグローバルのバリューを取ってくることができる
   const appContext = useContext(AppContext);
   const [data, setData] = useState({ identifier: "", password: "" });
-  console.log(data);
+  //console.log(data);
 
   const handleLogin = () => {
     login(data.identifier, data.password)

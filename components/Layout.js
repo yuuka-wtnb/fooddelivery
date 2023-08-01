@@ -63,7 +63,7 @@ const Layout = (props) => {
         </Nav>
       </header>
       <Container>{props.children}</Container>
-    </div>
+   </div>
   );
 };
 

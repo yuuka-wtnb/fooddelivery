@@ -1,8 +1,17 @@
-import { Button, Card, CardBody, CardImg, CardTitle, Col, Row } from "reactstrap";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardImg,
+  CardTitle,
+  Col,
+  Row,
+} from "reactstrap";
 import Link from "next/link";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 import { useRouter } from "next/router";
+import Cart from "../components/Cart";
 
 //variablesがrestaurant(id: $id)の$idに設定されるようになる
 const GET_RESTAURANT_DISHES = gql`
@@ -39,49 +48,54 @@ const Restaurants = (props) => {
     return (
       //xs="6" sm="4"はレスポンシブの設定
       <>
-      <h1 style={{padding:"0 0 0 10px"}}>{restaurant.name}</h1>
-      <Row>
-        {/* restaurantの中のdishesを1つ1つ取り出す */}
-        {restaurant.dishes.map((res) => (
-          <Col xs="6" sm="4" key={res.id} style={{padding:"0 0 0 10px"}}>
-            <Card style={{ margin: "0 10px 0 20px" }}>
-              <CardImg
-                src={`${process.env.NEXT_PUBLIC_API_URL}${res.image.url}`}
-                top={true}
-                style={{ height: 250 }}
-              >
-                {/* topプロパティに trueが指定されているため、カードの上部に画像が表示されます。*/}
-              </CardImg>
-              <CardBody>
-                <CardTitle>{res.name}</CardTitle>
-                <CardTitle>{res.description}</CardTitle>
-              </CardBody>
-              <div className="card-footer"></div>
-              <Button outline color="primary">
-                +カートに入れる
-              </Button>
-            </Card>
-          </Col>
-        ))}
+        <h1 style={{ padding: "0 0 0 10px" }}>{restaurant.name}</h1>
+        <Row>
+          {/* restaurantの中のdishesを1つ1つ取り出す */}
+          {restaurant.dishes.map((res) => (
+            <Col xs="6" sm="4" key={res.id} style={{ padding: "0 0 0 10px" }}>
+              <Card style={{ margin: "0 10px 0 20px" }}>
+                <CardImg
+                  src={`${process.env.NEXT_PUBLIC_API_URL}${res.image.url}`}
+                  top={true}
+                  style={{ height: 250 }}
+                >
+                  {/* topプロパティに trueが指定されているため、カードの上部に画像が表示されます。*/}
+                </CardImg>
+                <CardBody>
+                  <CardTitle>{res.name}</CardTitle>
+                  <CardTitle>{res.description}</CardTitle>
+                </CardBody>
+                <div className="card-footer"></div>
+                <Button outline color="primary">
+                  +カートに入れる
+                </Button>
+              </Card>
+            </Col>
+          ))}
 
-        <style jsx>
-          {`
-            a {
-              color: white;
-            }
-            a:link {
-              text-decoration: none;
-              color: white;
-            }
-            a:hover {
-              color: white;
-            }
-            .card-columns {
-              column-count: 3;
-            }
-          `}
-        </style>
-      </Row>
+          <style jsx>
+            {`
+              a {
+                color: white;
+              }
+              a:link {
+                text-decoration: none;
+                color: white;
+              }
+              a:hover {
+                color: white;
+              }
+              .card-columns {
+                column-count: 3;
+              }
+            `}
+          </style>
+          <Col xs="3" style={{ padding: 0 }}>
+            <div>
+              <Cart></Cart>
+            </div>
+          </Col>
+        </Row>
       </>
     );
   } else {
