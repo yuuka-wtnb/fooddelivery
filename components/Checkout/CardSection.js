@@ -1,9 +1,24 @@
+import {CardElement} from "@stripe/react-stripe-js";
+
+
+
 const CardSection = () => {
-    return (
+  return (
+    <div>
+      <div>
+        <label htmlFor="card-element">クレジット/デビットカード</label>
         <div>
-            Enter
+          <fieldset>
+            <div className="form-raw">
+              <div id="id-element" style={{ width: "100%" }}>
+                <CardElement />
+              </div>
+            </div>
+          </fieldset>
         </div>
-    );
-}
+      </div>
+    </div>
+  );
+};
 
 export default CardSection;
