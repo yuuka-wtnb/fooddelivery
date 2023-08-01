@@ -26,6 +26,18 @@ class MyApp extends App {
   //すでにユーザーのクッキーが残っているかどうかを確認するための関数
   componentDidMount() {
     const token = Cookies.get("token"); //tokenのなかにはjwdが入っている
+    const cart = Cookies.get("cart");
+
+    console.log(cart);
+
+    if (cart != "undefined") {
+      JSON.parse(cart).forEach((item) => {
+        this.setState({
+          cart: { items: JSON.parse(cart), 
+            total:this.state.cart.total += item.price * item.quantity },
+        });
+      });
+    }
 
     if (token) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
@@ -94,28 +106,28 @@ class MyApp extends App {
     }
     //すでに同じ商品がカートに入っているとき
     else {
-      this.setState({
-        cart: {
-          items: this.state.cart.items.map((item) =>
-            //もしitem.id === newItem.idがtrueなら？以降を実行
-            item.id === newItem.id
-              ? //Object.assign()関数は、既存の配列に対してなにかしらの新しいフィールドを追加したりするときなどに使用
-                //{}の引数を指定することでコピーしますよという意味
-                //items: []の空の配列に対してquantityというをフィールドを新しくitemに追加する
-                //item.quantity→既存の数量ですでにカートに入っているときは＋1してあげる(1+1みたいに)
-                Object.assign({}, item, { quantity: item.quantity + 1 })
-              : item //falseのとき（item.id === newItem.idじゃないときは）ただ単にitemだけ返す
-          ),
-          total:this.state.cart.total + item.price,
+      this.setState(
+        {
+          cart: {
+            items: this.state.cart.items.map(
+              (item) =>
+                //もしitem.id === newItem.idがtrueなら？以降を実行
+                item.id === newItem.id
+                  ? //Object.assign()関数は、既存の配列に対してなにかしらの新しいフィールドを追加したりするときなどに使用
+                    //{}の引数を指定することでコピーしますよという意味
+                    //items: []の空の配列に対してquantityというをフィールドを新しくitemに追加する
+                    //item.quantity→既存の数量ですでにカートに入っているときは＋1してあげる(1+1みたいに)
+                    Object.assign({}, item, { quantity: item.quantity + 1 })
+                  : item //falseのとき（item.id === newItem.idじゃないときは）ただ単にitemだけ返す
+            ),
+            total: this.state.cart.total + item.price,
+          },
         },
-      },
-      //カートの中の情報をCookieに保存
-      () => Cookies.set("cart", this.state.cart.items)
+        //カートの中の情報をCookieに保存
+        () => Cookies.set("cart", this.state.cart.items)
       );
     }
   };
-
-
 
   removeItem = (item) => {
     let { items } = this.state.cart; //現在のカート状態。
@@ -146,25 +158,23 @@ class MyApp extends App {
     }
   };
 
-
-  render(){
+  render() {
     const { Component, pageProps } = this.props;
     return (
       //ユーザーがログインしているのか監視→全部のページで監視したいからreturn全部で囲ってる
       //user: this.state.user→今現在のユーザー状態を渡してあげている
       //どのコンポーネントにおいてもユーザーがログインしたのかをセットしたいからsetUser:this.setUserを渡す必要がある
       <AppContext.Provider
-  
-      //thisとはこのクラス自身をさしてる。今回だとMyApp
-      //このvalueを全てのコンポーネント内で使うことができる→だからグローバルコンテキストと呼ばれてる
-        value={{ 
+        //thisとはこのクラス自身をさしてる。今回だとMyApp
+        //このvalueを全てのコンポーネント内で使うことができる→だからグローバルコンテキストと呼ばれてる
+        value={{
           user: this.state.user,
           cart: this.state.cart,
           setUser: this.setUser,
-          addItem:this.addItem,
-          removeItem:this.removeItem,
-         }}
-        >
+          addItem: this.addItem,
+          removeItem: this.removeItem,
+        }}
+      >
         <>
           <Head>
             <link
