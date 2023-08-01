@@ -48,7 +48,7 @@ class MyApp extends App {
         //このifを通らなかった場合ちゃんとユーザー情報が入ってる
         //まずjson形式になおす
         const user = await res.json();
-        //そのなかにユーザー情報が入っているからsetuser関数を使ってそれを入れてあげる
+        //そのなかにユーザー情報が入っているからsetUser関数を使ってそれを入れてあげる
         this.setUser(user); //ログイン
       });
     }
@@ -56,7 +56,7 @@ class MyApp extends App {
 
   //カートへ商品の追加
   //itemsはサラダやパスタなどの商品を指定で、restaurants.jsのmap関数で展開したresのこと
-  //res.name tes.descriptionとかが入っててresのなかに料理1つ1つの情報がはいっている
+  //dish.name dish.descriptionとかが入っててdishのなかに料理1つ1つの情報がはいっている
   addItem = (item) => {
     //this.state.cart;が今現在のカートの中身
     //その中からitems属性だけ取り出す
@@ -68,7 +68,10 @@ class MyApp extends App {
     // i,id === item.id→サラダのidがitem.idと等しいならば
     // それだけをnewItemに格納する
     // items.idはサラダやパスタなどの商品を指定で、restaurants.jsのmap関数で展開したresのid
-    const newItem = items.find((i) => i, id === item.id);
+    const newItem = items.find((i) => i.id === item.id);
+
+    console.log(newItem);
+
     if (!newItem) {
       //itemの商品の数
       item.quantity = 1;
@@ -119,7 +122,8 @@ class MyApp extends App {
       //user: this.state.user→今現在のユーザー状態を渡してあげている
       //どのコンポーネントにおいてもユーザーがログインしたのかをセットしたいからsetUser:this.setUserを渡す必要がある
       <AppContext.Provider
-        value={{ user: this.state.user, setUser: this.setUser }}
+      //thisとはこのクラス自身をさしてる。今回だとMyApp
+        value={{ user: this.state.user, setUser: this.setUser, addItem:this.addItem }}
       >
         <>
           <Head>

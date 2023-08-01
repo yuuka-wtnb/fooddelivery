@@ -12,6 +12,8 @@ import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 import { useRouter } from "next/router";
 import Cart from "../components/Cart";
+import { useContext } from "react";
+import AppContext from "../context/AppContext";
 
 //variablesがrestaurant(id: $id)の$idに設定されるようになる
 const GET_RESTAURANT_DISHES = gql`
@@ -33,6 +35,7 @@ const GET_RESTAURANT_DISHES = gql`
 `;
 
 const Restaurants = (props) => {
+  const appContext = useContext(AppContext);
   const router = useRouter();
   const { loading, error, data } = useQuery(GET_RESTAURANT_DISHES, {
     // ここのqueryはhref={`/restaurants?id=${res.id}`}のres.idをとってきてる
@@ -51,22 +54,22 @@ const Restaurants = (props) => {
         <h1 style={{ padding: "0 0 0 10px" }}>{restaurant.name}</h1>
         <Row>
           {/* restaurantの中のdishesを1つ1つ取り出す */}
-          {restaurant.dishes.map((res) => (
-            <Col xs="6" sm="4" key={res.id} style={{ padding: "0 0 0 10px" }}>
+          {restaurant.dishes.map((dish) => (
+            <Col xs="6" sm="4" key={dish.id} style={{ padding: "0 0 0 10px" }}>
               <Card style={{ margin: "0 10px 0 20px" }}>
                 <CardImg
-                  src={`${process.env.NEXT_PUBLIC_API_URL}${res.image.url}`}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}${dish.image.url}`}
                   top={true}
                   style={{ height: 250 }}
                 >
                   {/* topプロパティに trueが指定されているため、カードの上部に画像が表示されます。*/}
                 </CardImg>
                 <CardBody>
-                  <CardTitle>{res.name}</CardTitle>
-                  <CardTitle>{res.description}</CardTitle>
+                  <CardTitle>{dish.name}</CardTitle>
+                  <CardTitle>{dish.description}</CardTitle>
                 </CardBody>
                 <div className="card-footer"></div>
-                <Button outline color="primary">
+                <Button outline color="primary" onClick={() =>appContext.addItem(dish) }>
                   +カートに入れる
                 </Button>
               </Card>
