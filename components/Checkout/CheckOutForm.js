@@ -3,12 +3,16 @@ import CardSection from "./CardSection";
 import Cookies from "js-cookie";
 import AppContext from "../../context/AppContext";
 import { useContext, useState } from "react";
+import { useElements, useStripe } from "@stripe/react-stripe-js";
 
 const CheckOutForm = () => {
   const [data, setData] = useState({
     address: "",
     stripe_id: "",
   });
+
+  const elements = useElements();
+  const stripe = useStripe();
 
   const handleChange = (e) => {
     //[e.target.name]=address
@@ -22,6 +26,9 @@ const CheckOutForm = () => {
 
   //注文を確定させる関数
   const submitOrder = async () => {
+    const Cardelement = elements.getElement(CardElement);
+    const token = await stripe.createToken(cardElement);
+
     //.env.developmentのNEXT_PUBLIC_API_URL = "http://localhost:1337"
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
       method: "POST",
@@ -32,6 +39,7 @@ const CheckOutForm = () => {
         amount: Number(appContext.cart.total),
         dishes: appContext.cart.item,
         address: data.address,
+        token: token.token.id,
       }),
     });
   };
