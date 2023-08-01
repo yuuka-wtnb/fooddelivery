@@ -115,7 +115,39 @@ class MyApp extends App {
     }
   };
 
-  render() {
+
+
+  removeItem = (item) => {
+    let { items } = this.state.cart; //現在のカート状態。
+    const newItem = items.find((i) => i.id === item.id);
+    if (newItem.quantity > 1) {
+      this.setState(
+        {
+          cart: {
+            items: this.state.cart.items.map((item) =>
+              item.id === newItem.id
+                ? Object.assign({}, item, { quantity: item.quantity - 1 })
+                : item
+            ),
+            total: this.state.cart.total - item.price,
+          },
+        },
+        () => Cookies.set("cart", this.state.items)
+      );
+    } else {
+      //注文数が1のときは注文を削除する。
+      const items = [...this.state.cart.items];
+      const index = items.findIndex((i) => i.id === newItem.id); //idが一致したindex番号を返す。
+      items.splice(index, 1); //それを削除する。
+      this.setState(
+        { cart: { items: items, total: this.state.cart.total - item.price } },
+        () => Cookies.set("cart", this.state.items)
+      );
+    }
+  };
+
+
+  render(){
     const { Component, pageProps } = this.props;
     return (
       //ユーザーがログインしているのか監視→全部のページで監視したいからreturn全部で囲ってる
@@ -125,8 +157,14 @@ class MyApp extends App {
   
       //thisとはこのクラス自身をさしてる。今回だとMyApp
       //このvalueを全てのコンポーネント内で使うことができる→だからグローバルコンテキストと呼ばれてる
-        value={{ user: this.state.user,cart: this.state.cart ,setUser: this.setUser, addItem:this.addItem }}
-      >
+        value={{ 
+          user: this.state.user,
+          cart: this.state.cart,
+          setUser: this.setUser,
+          addItem:this.addItem,
+          removeItem:this.removeItem,
+         }}
+        >
         <>
           <Head>
             <link
@@ -134,8 +172,9 @@ class MyApp extends App {
               href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
             />
           </Head>
+
           <Layout>
-            <Component {...pageProps}></Component>
+            <Component {...pageProps} />
           </Layout>
         </>
       </AppContext.Provider>
@@ -143,5 +182,4 @@ class MyApp extends App {
   }
 }
 
-//withDataでMyAppをラッピング
 export default withData(MyApp);
